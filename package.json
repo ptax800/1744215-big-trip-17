@@ -31,3 +31,4 @@
   },
   "build": "webpack --mode production"
 }
+
