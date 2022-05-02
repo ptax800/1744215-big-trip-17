@@ -28,7 +28,6 @@
   },
   "engines": {
     "node": "16"
-  },
-  "build": "webpack --mode production"
+  }
 }
 
