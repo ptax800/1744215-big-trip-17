@@ -1,7 +1,7 @@
 //trip-events__item
 import {createElement} from '../render.js';
 
-const FiltreView = () => `<li class="trip-events__item">
+const createTemplate = () => (`<li class="trip-events__item">
 <div class="event">
   <time class="event__date" datetime="2019-03-18">MAR 18</time>
   <div class="event__type">
@@ -80,11 +80,13 @@ const FiltreView = () => `<li class="trip-events__item">
     <span class="visually-hidden">Open event</span>
   </button>
 </div>
-</li>`;
+</li>
+`
+);
 
-export default class CreateFiltreView {
+export default class EventFilterView {
   getTemplate() {
-    return FiltreView();
+    return createTemplate();
   }
 
   getElement() {
