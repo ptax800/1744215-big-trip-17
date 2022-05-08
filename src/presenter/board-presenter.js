@@ -14,6 +14,7 @@ export default class BoardPresenter {
     render(new EventSortView(), this.eventListComponent.getElement());
     render(new EventEditFormView(), this.eventListComponent.getElement());
 
+
     for(let i = 0; i < 9; i++){
       render(new EventItemView(), this.eventListComponent.getElement());
     }
