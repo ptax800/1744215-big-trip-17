@@ -1,8 +1,8 @@
 import {createElement} from '../render.js';
-
-const createTemplate = () => (`
-<div class="trip-main__trip-controls  trip-controls">
-<div class="trip-controls__filters">
+//
+const createTemplate = () => (
+  `<div class="trip-main__trip-controls  trip-controls">
+  <div class="trip-controls__filters">
   <h2 class="visually-hidden">Filter events</h2>
   <form class="trip-filters" action="#" method="get">
 <div class="trip-filters__filter">
@@ -21,10 +21,9 @@ const createTemplate = () => (`
 </div>
 
 <button class="visually-hidden" type="submit">Accept filter</button>
-</form>
-</div>
-</div>
-`
+  </form>
+  </div>
+  </div>`
 );
 
 export default class EventFiltresView {
