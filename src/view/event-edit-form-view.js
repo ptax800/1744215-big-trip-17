@@ -1,13 +1,20 @@
 import {createElement} from '../render.js';
 
-const createMainTemplate = () => (
-  `<li class="trip-events__item">
+const createMainTemplate = (point) => {
+
+  const {  type, dateFrom, dateTo, basePrice, offers, isFavorite } = point;
+
+  return (
+    `<li class="trip-events__item">
+
+          <span>aejfhiuwerfwrenufinwifnuwi</span>
+
   <form class="event event--edit" action="#" method="post">
   <header class="event__header">
   <div class="event__type-wrapper">
     <label class="event__type  event__type-btn" for="event-type-toggle-1">
       <span class="visually-hidden">Choose event type</span>
-      <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
     </label>
     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -42,7 +49,8 @@ const createMainTemplate = () => (
 
         <div class="event__type-item">
           <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
+          <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">   09j90iu9l>?"
+          </label>
         </div>
 
         <div class="event__type-item">
@@ -156,12 +164,17 @@ const createMainTemplate = () => (
 </section>
 </form>
 </li>`
-);
+  );
+};
 
-// new-event-edit-view !== EventEditFormView
+
 export default class EventEditFormView {
+  constructor(point) {
+    this.point = point;
+  }
+
   getTemplate() {
-    return createMainTemplate();
+    return createMainTemplate(this.point);
   }
 
   getElement() {
