@@ -1,4 +1,3 @@
-//trip-events__item
 import {createElement} from '../render.js';
 
 const createOfferTemplate = ({ title, price }) => (
@@ -13,15 +12,15 @@ const createTemplate = (point) => {
   const { type, dateFrom, dateTo, basePrice, offers, isFavorite } = point;
 
   const offersTemplate = offers.map(createOfferTemplate).join('');
-
+  
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
     : '';
-
+  
   return (
     `<li class="trip-events__item">
       <div class="event">
-      <time class="event__date" datetime="${dateFrom.toISOString()}">MAR 18</time>
+      <time class="event__date" datetime=""${dateFrom.toISOString()}">MAR 18</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
@@ -59,7 +58,7 @@ export default class EventItemView {
   constructor(point) {
     this.point = point;
   }
-
+  
   getTemplate() {
     return createTemplate(this.point);
   }

@@ -1,6 +1,5 @@
 import EventSortView from '../view/event-sort-view';
 import EventListView from '../view/event-list-view';
-import EventEditFormView from '../view/event-edit-form-view';
 import EventItemView from '../view/event-item-view';
 import EventFormView from '../view/event-form-view';
 
@@ -23,15 +22,12 @@ export default class PointPresenter {
 
     const points = [...this.pointModel.getPoints()]; // this.pointModel.getPoints().slice();
 
-    render(new EventEditFormView(points[1]), this.eventListComponent.getElement());
-    render(new EventEditFormView(points[1]), this.eventListComponent.getElement());
     render(new EventFormView(points[2]), this.eventListComponent.getElement());
 
 
     points.slice(1).forEach((point) => {
       render(new EventItemView(point), this.eventListComponent.getElement());
     });
-
 
     render(this.eventListComponent, this.containerElement);
   };
