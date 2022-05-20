@@ -1,16 +1,17 @@
 import HeaderPresenter from './presenter/header-presenter.js';
-import BoardPresenter from './presenter/board-presenter.js';
-import EventFormView from './view/event-form-view.js';
+import PointPresenter from './presenter/point-presenter.js';
+
+import PointModel from './model/point-model.js';
+
 import { render } from './render.js';
 
+const mainElement = document.querySelector('.trip-main');
+const eventsContainerElement = document.querySelector( '.trip-events');
 
-const tripMainElement = document.querySelector('.trip-main');
-const eventsContainerElement = document.querySelector( '.trip-events' );
+const pointModel = new PointModel();
 
 const headerPresenter = new HeaderPresenter();
-const boardPresenter = new BoardPresenter();
+const pointPresenter = new PointPresenter(pointModel);
 
-headerPresenter.init(tripMainElement);
-boardPresenter.init(eventsContainerElement);
-
-
+headerPresenter.init(mainElement);
+pointPresenter.init(eventsContainerElement);
