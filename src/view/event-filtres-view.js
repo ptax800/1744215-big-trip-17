@@ -27,13 +27,13 @@ const createTemplate = () => (
 );
 
 export default class EventFiltresView {
-  getTemplate() {
+  get template() {
     return createTemplate();
   }
 
-  getElement() {
+  get element() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template());
     }
 
     return this.element;

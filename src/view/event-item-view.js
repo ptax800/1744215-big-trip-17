@@ -12,11 +12,11 @@ const createTemplate = (point) => {
   const { type, dateFrom, dateTo, basePrice, offers, isFavorite } = point;
 
   const offersTemplate = offers.map(createOfferTemplate).join('');
-  
+
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
     : '';
-  
+
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -58,14 +58,14 @@ export default class EventItemView {
   constructor(point) {
     this.point = point;
   }
-  
-  getTemplate() {
+
+  get template() {
     return createTemplate(this.point);
   }
 
-  getElement() {
+  get element() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template());
     }
 
     return this.element;

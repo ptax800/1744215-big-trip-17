@@ -6,29 +6,29 @@ import EventFormView from '../view/event-form-view';
 import {render, RenderPosition} from '../render';
 
 export default class PointPresenter {
-  pointModel = null;
+  #pointModel = null;
 
-  containerElement = null;
-  eventListComponent = new EventListView();
+  #containerElement = null;
+  #eventListComponent = new EventListView();
 
   constructor(pointModel) {
-    this.pointModel = pointModel;
+    this.#pointModel = pointModel;
   }
 
   init = (containerElement) => {
-    this.containerElement = containerElement;
+    this.#containerElement = containerElement;
 
-    render(new EventSortView(), this.eventListComponent.getElement());
+    render(new EventSortView(), this.#eventListComponent.element());
 
-    const points = [...this.pointModel.getPoints()]; // this.pointModel.getPoints().slice();
+    const points = [...this.#pointModel.points]; // this.pointModel.getPoints().slice();
 
-    render(new EventFormView(points[2]), this.eventListComponent.getElement());
+    render(new EventFormView(points[2]), this.#eventListComponent.element());
 
 
     points.slice(1).forEach((point) => {
-      render(new EventItemView(point), this.eventListComponent.getElement());
+      render(new EventItemView(point), this.#eventListComponent.element());
     });
 
-    render(this.eventListComponent, this.containerElement);
+    render(this.#eventListComponent, this.#containerElement);
   };
 }

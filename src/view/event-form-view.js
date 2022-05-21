@@ -214,13 +214,13 @@ export default class EventFormView {
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return createTemplate(this.point);
   }
 
-  getElement() {
+  get element() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this.template());
     }
 
     return this.element;
