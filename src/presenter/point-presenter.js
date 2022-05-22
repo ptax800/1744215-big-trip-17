@@ -18,15 +18,15 @@ export default class PointPresenter {
   init = (containerElement) => {
     this.#containerElement = containerElement;
 
-    render(new EventSortView(), this.#eventListComponent.element());
+    render(new EventSortView(), this.#eventListComponent.element);
 
     const points = [...this.#pointModel.points]; // this.pointModel.getPoints().slice();
 
-    render(new EventFormView(points[2]), this.#eventListComponent.element());
+    render(new EventFormView(points[2]), this.#eventListComponent.element);
 
 
     points.slice(1).forEach((point) => {
-      render(new EventItemView(point), this.#eventListComponent.element());
+      render(new EventItemView(point), this.#eventListComponent.element);
     });
 
     render(this.#eventListComponent, this.#containerElement);
