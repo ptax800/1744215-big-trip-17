@@ -31,7 +31,7 @@ const createPoint = ({
   offers,
 });
 
-const createPoints = [
+const createPoints = () => [
   createPoint({
     dateFrom: new Date('2022-05-13T01:00:00.845Z'),
     dateTo: new Date('2022-05-14T01:00:00.845Z'),
