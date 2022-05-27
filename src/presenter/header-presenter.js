@@ -5,14 +5,14 @@ import {render} from '../render';
 
 
 export default class HeaderPresenter {
-  containerElement = null;
+  #containerElement = null;
 
   init = (containerElement) => {
-    this.containerElement = containerElement;
+    this.#containerElement = containerElement;
 
-    render(new EventTripMainView(), this.containerElement);
-    render(new EventFiltresView(), this.containerElement);
-    render(new EvenButtonView(), this.containerElement);
+    render(new EventTripMainView(), this.#containerElement);
+    render(new EventFiltresView(), this.#containerElement);
+    render(new EvenButtonView(), this.#containerElement);
 
   };
 }

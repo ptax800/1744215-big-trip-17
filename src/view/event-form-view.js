@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/abstract-view.js';
 import { POINT_TYPES } from '../mock/const';
 
 // edit mode
@@ -47,7 +47,7 @@ const capitalizeFirstLetter = (text) =>
 // console.log(capitalizeFirstLetter('bus'));
 // console.log(capitalizeFirstLetter(''));
 
-const createOfferTemplate = ({ title, price, isChcked = false}) => (
+const createOfferTemplate = ({ title, price, isChcked = false }) => (
   `<div class="event__offer-selector">
     <input
       class="event__offer-checkbox visually-hidden"
@@ -84,7 +84,6 @@ const createTemplate = (point) => {
   const photosContainerTemplate = pictures.length > 0
     ? createPhotosContainerTemplates(pictures)
     : '';
-
 
   return (
     `<li class="trip-events__item">
@@ -209,24 +208,16 @@ const createTemplate = (point) => {
   );
 };
 
-export default class EventFormView {
+export default class EventFormView extends AbstractView {
+  #point = null;
+  
   constructor(point) {
-    this.point = point;
+    super(); // 1) new AbstractView
+    
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTemplate(this.#point);
   }
 }

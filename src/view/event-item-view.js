@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/abstract-view.js';
 
 const createOfferTemplate = ({ title, price }) => (
   `<li class="event__offer">
@@ -12,11 +12,11 @@ const createTemplate = (point) => {
   const { type, dateFrom, dateTo, basePrice, offers, isFavorite } = point;
 
   const offersTemplate = offers.map(createOfferTemplate).join('');
-  
+
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
     : '';
-  
+
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -54,24 +54,16 @@ const createTemplate = (point) => {
   );
 };
 
-export default class EventItemView {
-  constructor(point) {
-    this.point = point;
-  }
+export default class EventItemView extends AbstractView {
+  #point = null;
   
-  getTemplate() {
-    return createTemplate(this.point);
+  constructor(point) {
+    super();
+    
+    this.#point = point;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createTemplate(this.#point);
   }
 }
