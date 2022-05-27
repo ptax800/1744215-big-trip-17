@@ -35,12 +35,12 @@ export default class PointPresenter {
 
         // Element.replaceWith
         // https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceWith
-        eventItemView.replaceWith(eventFormView.element);
+        eventFormView.element.replaceWith(eventItemView.element);
         document.removeEventListener('keydown', onEscKeyDown);
       };
 
       const replaceFormToItem = () => {
-        eventItemView.element.replaceWith(eventFormView.element);
+        eventFormView.element.replaceWith(eventItemView.element);
       };
 
       // function onEscKeyDown() {}
