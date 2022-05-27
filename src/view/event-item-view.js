@@ -1,4 +1,4 @@
-import AbstractView from './abstract-view.js';
+import AbstractView from '../framework/abstract-view.js';
 
 const createOfferTemplate = ({ title, price }) => (
   `<li class="event__offer">

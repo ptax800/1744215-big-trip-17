@@ -1,4 +1,4 @@
-import AbstractView from './abstract-view.js';
+import AbstractView from '../framework/abstract-view.js';
 import { POINT_TYPES } from '../mock/const';
 
 // edit mode

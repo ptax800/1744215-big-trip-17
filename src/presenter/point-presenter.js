@@ -30,12 +30,10 @@ export default class PointPresenter {
       const eventItemView = new EventItemView(point);
       const eventFormView = new EventFormView(point);
 
-
       const replaceItemToForm = () => {
-
         // Element.replaceWith
         // https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceWith
-        eventFormView.element.replaceWith(eventItemView.element);
+        eventItemView.element.replaceWith(eventFormView.element);
         document.removeEventListener('keydown', onEscKeyDown);
       };
 
@@ -52,11 +50,20 @@ export default class PointPresenter {
         }
       };
 
+      // module 3: taskComponent.element.querySelector('.card__btn--edit').addEventListener('click', () => {
+      //   https://github.com/htmlacademy-ecmascript/taskmanager-17/blob/module-3/src/presenter/board-presenter.js
+      
+      // module 4: taskComponent.setEditClickHandler(() => {
+      //   https://github.com/htmlacademy-ecmascript/taskmanager-17/blob/module-4/src/presenter/board-presenter.js
+  
+      // module 4: eventItemView.setRollupButtonClickHandler(handleRollupButtonClick)
       eventItemView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-        replaceFormToItem();
+        // this.#eventListView.element.replaceChild(eventFormView.element, eventItemView.element);
+        replaceItemToForm();
         document.addEventListener('keydown', onEscKeyDown);
       });
 
+      // eventFormView.setRollupButtonClickHandler(() => {})
       eventFormView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
         replaceItemToForm();
         document.removeEventListener('keydown', onEscKeyDown);
