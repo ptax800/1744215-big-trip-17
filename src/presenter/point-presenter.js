@@ -57,24 +57,31 @@ export default class PointPresenter {
       //   https://github.com/htmlacademy-ecmascript/taskmanager-17/blob/module-4/src/presenter/board-presenter.js
   
       // module 4: eventItemView.setRollupButtonClickHandler(handleRollupButtonClick)
+      /*
       eventItemView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
         // this.#eventListView.element.replaceChild(eventFormView.element, eventItemView.element);
         replaceItemToForm();
         document.addEventListener('keydown', onEscKeyDown);
       });
+      **/
+  
+      const handleEventItemRollupButtonClick = () => {
+        replaceItemToForm();
+        document.addEventListener('keydown', onEscKeyDown);
+      };
 
-      // eventFormView.setRollupButtonClickHandler(() => {})
-      eventFormView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      eventItemView.setRollupButtonClickHandler(handleEventItemRollupButtonClick);
+
+      eventFormView.setRollupButtonClickHandler(() => {
         replaceItemToForm();
         document.removeEventListener('keydown', onEscKeyDown);
       });
-
-      eventFormView.element.addEventListener('submit', (evt) => {
-        evt.preventDefault();
+      
+      eventFormView.setSaveButtonHandler(() => {
         replaceItemToForm();
         document.removeEventListener('keydown', onEscKeyDown);
       });
-
+      
       render(eventItemView, this.#eventListView.element);
     });
 
