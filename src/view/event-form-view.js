@@ -232,7 +232,7 @@ export default class EventFormView extends AbstractView {
     this.element.addEventListener('submit', this.#onSubmit);
   }
   // Д4: on + (на каком элементе) + что случилось
-  #onRollupButtonClick = (evt) => {
+  #onRollupButtonClick = (evt) => 
     evt.preventDefault();
     this._callback.clickRollup();
   }
@@ -242,4 +242,3 @@ export default class EventFormView extends AbstractView {
     this._callback.clickSave();
   }
 }
-
