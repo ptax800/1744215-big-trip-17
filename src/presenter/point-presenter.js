@@ -7,8 +7,6 @@ import {render, RenderPosition} from '../render';
 
 const ESCAPE_KEYS = ['Escape', 'Esc'];
 
-// if (evt.key === 'Escape' || evt.key === 'Esc') {
-// const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 const isEscEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
 
 export default class PointPresenter {
@@ -17,6 +15,8 @@ export default class PointPresenter {
   #containerElement = null;
   #eventListView = new EventListView();
 
+  #points = [];
+
   constructor(pointModel) {
     this.#pointModel = pointModel;
   }
@@ -24,68 +24,56 @@ export default class PointPresenter {
   init = (containerElement) => {
     this.#containerElement = containerElement;
 
-    const points = [...this.#pointModel.points];
+    this.#points = [...this.#pointModel.points];
 
-    points.forEach((point) => {
-      const eventItemView = new EventItemView(point);
-      const eventFormView = new EventFormView(point);
+    this.#render();
+  };
 
-      const replaceItemToForm = () => {
-        // Element.replaceWith
-        // https://developer.mozilla.org/en-US/docs/Web/API/Element/replaceWith
-        eventItemView.element.replaceWith(eventFormView.element);
-        document.removeEventListener('keydown', onEscKeyDown);
-      };
-
-      const replaceFormToItem = () => {
-        eventFormView.element.replaceWith(eventItemView.element);
-      };
-
-      // function onEscKeyDown() {}
-      const onEscKeyDown = (evt) => {
-        if (isEscEvent(evt)) {
-          evt.preventDefault();
-          replaceFormToItem();
-          document.removeEventListener('keydown', onEscKeyDown);
-        }
-      };
-
-      // module 3: taskComponent.element.querySelector('.card__btn--edit').addEventListener('click', () => {
-      //   https://github.com/htmlacademy-ecmascript/taskmanager-17/blob/module-3/src/presenter/board-presenter.js
-      
-      // module 4: taskComponent.setEditClickHandler(() => {
-      //   https://github.com/htmlacademy-ecmascript/taskmanager-17/blob/module-4/src/presenter/board-presenter.js
-  
-      // module 4: eventItemView.setRollupButtonClickHandler(handleRollupButtonClick)
-      /*
-      eventItemView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-        // this.#eventListView.element.replaceChild(eventFormView.element, eventItemView.element);
-        replaceItemToForm();
-        document.addEventListener('keydown', onEscKeyDown);
-      });
-      **/
-  
-      const handleEventItemRollupButtonClick = () => {
-        replaceItemToForm();
-        document.addEventListener('keydown', onEscKeyDown);
-      };
-
-      eventItemView.setRollupButtonClickHandler(handleEventItemRollupButtonClick);
-
-      eventFormView.setRollupButtonClickHandler(() => {
-        replaceItemToForm();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
-      
-      eventFormView.setSaveButtonHandler(() => {
-        replaceItemToForm();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
-      
-      render(eventItemView, this.#eventListView.element);
-    });
+  #render = () => {
+    this.#points.forEach(this.#renderPoint);
 
     render(new EventSortView(), this.#containerElement);
     render(this.#eventListView, this.#containerElement);
-  };
+  }
+
+  #renderPoint = (point) => {
+    const eventItemView = new EventItemView(point);
+    const eventFormView = new EventFormView(point);
+
+    const replaceItemToForm = () => {
+      eventItemView.element.replaceWith(eventFormView.element);
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
+    const replaceFormToItem = () => {
+      eventFormView.element.replaceWith(eventItemView.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (isEscEvent(evt)) {
+        evt.preventDefault();
+        replaceFormToItem();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    const handleEventItemRollupButtonClick = () => {
+      replaceItemToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    };
+
+    eventItemView.setRollupButtonClickHandler(handleEventItemRollupButtonClick);
+
+    eventFormView.setRollupButtonClickHandler(() => {
+      replaceItemToForm();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    eventFormView.setSaveButtonHandler(() => {
+      replaceItemToForm();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    render(eventItemView, this.#eventListView.element);
+  }
 }

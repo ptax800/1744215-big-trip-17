@@ -33,8 +33,8 @@ const createPoint = ({
 
 const createPoints = () => [
   createPoint({
-    dateFrom: new Date('2022-05-13T01:00:00.845Z'),
-    dateTo: new Date('2022-05-14T01:00:00.845Z'),
+    dateFrom: new Date('2022-05-13T01:12:00.845Z'),
+    dateTo: new Date('2022-05-14T01:46:00.845Z'),
     isFavorite: true,
     offers: [
       createOffer({ id: 1 }),
@@ -49,7 +49,7 @@ const createPoints = () => [
   }),
   createPoint({
     trype: 'ship',
-    dateFrom: new Date('2022-05-14T05:00:00.845Z'),
+    dateFrom: new Date('2022-05-14T05:22:00.845Z'),
     dateTo: new Date('2022-05-15T14:00:00.845Z'),
     isFavorite: true,
     offers: Array.from({ length: 1 }, createOffer),

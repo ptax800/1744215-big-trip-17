@@ -1,4 +1,5 @@
 import AbstractView from '../framework/abstract-view.js';
+import { formatEventDate, formatScheduleDate, formatEventDuration } from '../utils/point.js';
 
 const createOfferTemplate = ({ title, price }) => (
   `<li class="event__offer">
@@ -9,7 +10,7 @@ const createOfferTemplate = ({ title, price }) => (
 );
 
 const createTemplate = (point) => {
-  const { type, dateFrom, dateTo, basePrice, offers, isFavorite } = point;
+  const { type, dateFrom, dateTo, basePrice, offers, isFavorite, destination: { name } } = point;
 
   const offersTemplate = offers.map(createOfferTemplate).join('');
 
@@ -20,18 +21,18 @@ const createTemplate = (point) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
-      <time class="event__date" datetime=""${dateFrom.toISOString()}">MAR 18</time>
+      <time class="event__date" datetime=""${dateFrom.toISOString()}">${formatEventDate(dateFrom)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} Amsterdam</h3>
+      <h3 class="event__title">${type} ${name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dateFrom.toISOString()}">10:30</time>
+          <time class="event__start-time" datetime="${dateFrom.toISOString()}">${formatScheduleDate(dateFrom)}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dateTo.toISOString()}">11:00</time>
+          <time class="event__end-time" datetime="${dateTo.toISOString()}">${formatScheduleDate(dateTo)}</time>
         </p>
-        <p class="event__duration">30M</p>
+        <p class="event__duration">${formatEventDuration(dateTo - dateFrom)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -56,24 +57,24 @@ const createTemplate = (point) => {
 
 export default class EventItemView extends AbstractView {
   #point = null;
-  
+
   constructor(point) {
     super();
-    
+
     this.#point = point;
   }
-  
+
   get template() {
     return createTemplate(this.#point);
   }
-  
+
   setRollupButtonClickHandler = (callback) => {
     this._callback.clickRollup = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupButtonClick);
   }
-  // Д4: on + (на каком элементе) + что случилось
-  #onRollupButtonClick = (evt) => { 
+  
+  #onRollupButtonClick = (evt) => {
     evt.preventDefault();
     this._callback.clickRollup();
-  }                                                     
+  }
 }
