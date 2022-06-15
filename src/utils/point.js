@@ -8,9 +8,11 @@ const formatEventDate = (date) => dayjs(date).format('MMM DD');
 
 const formatScheduleDate = (date) => dayjs(date).format('HH:mm');
 
+
 const formatEventDuration = (milliseconds) => {
   const durationTime = dayjs.duration(milliseconds);
- 
+
+
   if (durationTime.days() > 0) {
     return durationTime.format('DD[D] HH[H] mm[M]');;
   }

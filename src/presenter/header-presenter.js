@@ -1,10 +1,10 @@
-import EventTripMainView from '../view/event-trip-main-view.js';
-import EvenButtonView from '../view/event-button-view.js';
-import EventFiltresView from '../view/event-filtres-view.js';
-import {render} from '../render';
+import EventTripMainView from '../view/event-trip-main-view';
+import EvenButtonView from '../view/event-button-view';
+import EventFiltresView from '../view/event-filtres-view';
 
+import { render } from '../framework/render';
 
-export default class HeaderPresenter {
+class HeaderPresenter {
   #containerElement = null;
 
   init = (containerElement) => {
@@ -13,6 +13,7 @@ export default class HeaderPresenter {
     render(new EventTripMainView(), this.#containerElement);
     render(new EventFiltresView(), this.#containerElement);
     render(new EvenButtonView(), this.#containerElement);
-
   };
 }
+
+export default HeaderPresenter;

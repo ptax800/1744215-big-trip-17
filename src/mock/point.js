@@ -21,7 +21,7 @@ const createPoint = ({
   basePrice = 100,
   offers = [],
 }) => ({
-  id: '0',
+  id: String(Math.random()).slice(15),
   type,
   basePrice,
   dateFrom,

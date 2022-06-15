@@ -1,79 +1,104 @@
-import EventSortView from '../view/event-sort-view';
-import EventListView from '../view/event-list-view';
 import EventItemView from '../view/event-item-view';
 import EventFormView from '../view/event-form-view';
 
-import {render, RenderPosition} from '../render';
+import { render, replace, remove } from '../framework/render';
+import { isEscEvent } from '../utils/common';
 
-const ESCAPE_KEYS = ['Escape', 'Esc'];
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
-const isEscEvent = (evt) => ESCAPE_KEYS.includes(evt.key);
+class PointPresenter {
+  #container = null;
+  #changeData = null;
+  #changeMode = null;
 
-export default class PointPresenter {
-  #pointModel = null;
+  #eventItemView = null;
+  #eventFormView = null;
 
-  #containerElement = null;
-  #eventListView = new EventListView();
+  #point = null;
+  #mode = Mode.DEFAULT;
 
-  #points = [];
-
-  constructor(pointModel) {
-    this.#pointModel = pointModel;
+  constructor(container, changeData, changeMode) {
+    this.#container = container;
+    this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
-  init = (containerElement) => {
-    this.#containerElement = containerElement;
+  init = (point) => {
+    this.#point = point;
 
-    this.#points = [...this.#pointModel.points];
+    const prevEventItemView = this.#eventItemView;
+    const prevEventFormView = this.#eventFormView;
+    
+    this.#eventItemView = new EventItemView(point);
+    this.#eventFormView = new EventFormView(point);
 
-    this.#render();
+    this.#eventItemView.setRollupButtonClickHandler(this.#handlEventItemRollupButtonClick);
+    this.#eventItemView.setFavoriteButtonClickHandler(this.#handleFavoriteButtonClick);
+    this.#eventFormView.setRollupButtonClickHandler(this.#handlEventFormRollupButtonClick);
+    this.#eventFormView.setSaveButtonClickHandler(this.#handleEventFormSaveButtonClick);
+
+    if (prevEventItemView === null || prevEventFormView === null) {
+      render(this.#eventItemView, this.#container);
+      return;
+    }
+
+    if (this.#mode === Mode.DEFAULT) {
+      replace(this.#eventItemView, prevEventItemView);
+    }
+
+    if (this.#mode === Mode.EDITING) {
+      replace(this.#eventFormView, prevEventFormView);
+    }
+
+    remove(prevEventItemView);
+    remove(prevEventFormView);
+  }
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToItem();
+    }
   };
 
-  #render = () => {
-    this.#points.forEach(this.#renderPoint);
+  #replaceItemToForm = () => {
+    this.#changeMode();
+    
+    replace(this.#eventFormView, this.#eventItemView);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+    this.#mode = Mode.EDITING;
+  };
 
-    render(new EventSortView(), this.#containerElement);
-    render(this.#eventListView, this.#containerElement);
+  #replaceFormToItem = () => {
+    replace(this.#eventItemView, this.#eventFormView);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#mode = Mode.DEFAULT;
+  };
+
+  #handlEventItemRollupButtonClick = () => {
+    this.#replaceItemToForm();
   }
 
-  #renderPoint = (point) => {
-    const eventItemView = new EventItemView(point);
-    const eventFormView = new EventFormView(point);
+  #handlEventFormRollupButtonClick = () => {
+    this.#replaceFormToItem();
+  };
 
-    const replaceItemToForm = () => {
-      eventItemView.element.replaceWith(eventFormView.element);
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
+  #handleEventFormSaveButtonClick = () => {
+    this.#replaceFormToItem();
+  }
 
-    const replaceFormToItem = () => {
-      eventFormView.element.replaceWith(eventItemView.element);
-    };
+  #handleFavoriteButtonClick = () => {
+    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
+  }
 
-    const onEscKeyDown = (evt) => {
-      if (isEscEvent(evt)) {
-        evt.preventDefault();
-        replaceFormToItem();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    const handleEventItemRollupButtonClick = () => {
-      replaceItemToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    };
-
-    eventItemView.setRollupButtonClickHandler(handleEventItemRollupButtonClick);
-
-    eventFormView.setRollupButtonClickHandler(() => {
-      replaceItemToForm();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    eventFormView.setSaveButtonHandler(() => {
-      replaceItemToForm();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(eventItemView, this.#eventListView.element);
+  #onEscKeyDown = (evt) => {
+    if (isEscEvent(evt)) {
+      evt.preventDefault();
+      this.#replaceFormToItem();
+    }
   }
 }
+
+export default PointPresenter;

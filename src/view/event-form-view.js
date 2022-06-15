@@ -1,7 +1,23 @@
-
-import AbstractView from '../framework/abstract-view.js';
+import AbstractView from '../framework/view/abstract-view';
 import { POINT_TYPES } from '../mock/const';
 
+// edit mode
+/*
+  <button class="event__reset-btn" type="reset">Delete</button>
+  <button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>
+**/
+
+// new mode
+/*
+    <button class="event__reset-btn" type="reset">Cancel</button>
+**/
+
+// => const.js
+
+
+//  ${type === 'flight' ? 'checked' : ''}
 const createTypeItemTemplate = (id, text, isChecked = false) => (
   `<div class="event__type-item">
     <input
@@ -21,12 +37,15 @@ const createTypeListTemplate = (currentType, types) => types
   .map((pointType) => createTypeItemTemplate(pointType, capitalizeFirstLetter(pointType), currentType === pointType))
   .join('');
 
-
+// => util.js
+// const capitalizeFirstLetter = (text) => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 const capitalizeFirstLetter = (text) =>
   text.length > 0
     ? `${text[0].toUpperCase()}${text.slice(1)}`
     : '';
 
+// console.log(capitalizeFirstLetter('bus'));
+// console.log(capitalizeFirstLetter(''));
 
 const createOfferTemplate = ({ title, price, isChcked = false }) => (
   `<div class="event__offer-selector">
@@ -193,7 +212,7 @@ export default class EventFormView extends AbstractView {
   #point = null;
 
   constructor(point) {
-    super();
+    super(); // 1) new AbstractView
 
     this.#point = point;
   }
@@ -207,19 +226,18 @@ export default class EventFormView extends AbstractView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupButtonClick);
   }
 
-  setSaveButtonHandler = (callback) => {
+  setSaveButtonClickHandler = (callback) => {
     this._callback.clickSave = callback;
     this.element.addEventListener('submit', this.#onSubmit);
   }
-
+  // Д4: on + (на каком элементе) + что случилось
   #onRollupButtonClick = (evt) => {
     evt.preventDefault();
     this._callback.clickRollup();
-  };
-
-
+  }
+  // Д8: Методы внутри классов упорядочены
   #onSubmit = (evt) => {
     evt.preventDefault();
     this._callback.clickSave();
-  };
+  }
 }
