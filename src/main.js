@@ -5,6 +5,7 @@ import PointModel from './model/point-model.js';
 
 import { render } from './render.js';
 
+
 const mainElement = document.querySelector('.trip-main');
 const eventsContainerElement = document.querySelector( '.trip-events');
 
