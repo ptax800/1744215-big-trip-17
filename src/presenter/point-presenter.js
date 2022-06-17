@@ -26,14 +26,14 @@ class PointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (point) => {
+  init = (point, destinations) => {
     this.#point = point;
 
     const prevEventItemView = this.#eventItemView;
     const prevEventFormView = this.#eventFormView;
-    
+
     this.#eventItemView = new EventItemView(point);
-    this.#eventFormView = new EventFormView(point);
+    this.#eventFormView = new EventFormView(point, destinations);
 
     this.#eventItemView.setRollupButtonClickHandler(this.#handlEventItemRollupButtonClick);
     this.#eventItemView.setFavoriteButtonClickHandler(this.#handleFavoriteButtonClick);
@@ -41,7 +41,8 @@ class PointPresenter {
     this.#eventFormView.setSaveButtonClickHandler(this.#handleEventFormSaveButtonClick);
 
     if (prevEventItemView === null || prevEventFormView === null) {
-      render(this.#eventItemView, this.#container);
+      // render(this.#eventItemView, this.#container);
+      render(this.#eventFormView, this.#container);
       return;
     }
 
@@ -55,7 +56,12 @@ class PointPresenter {
 
     remove(prevEventItemView);
     remove(prevEventFormView);
-  }
+  };
+
+  destroy = () => {
+    remove(this.#eventItemView);
+    remove(this.#eventFormView);
+  };
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
@@ -65,7 +71,7 @@ class PointPresenter {
 
   #replaceItemToForm = () => {
     this.#changeMode();
-    
+
     replace(this.#eventFormView, this.#eventItemView);
     document.addEventListener('keydown', this.#onEscKeyDown);
     this.#mode = Mode.EDITING;
@@ -79,7 +85,7 @@ class PointPresenter {
 
   #handlEventItemRollupButtonClick = () => {
     this.#replaceItemToForm();
-  }
+  };
 
   #handlEventFormRollupButtonClick = () => {
     this.#replaceFormToItem();
@@ -87,18 +93,18 @@ class PointPresenter {
 
   #handleEventFormSaveButtonClick = () => {
     this.#replaceFormToItem();
-  }
+  };
 
   #handleFavoriteButtonClick = () => {
     this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
-  }
+  };
 
   #onEscKeyDown = (evt) => {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this.#replaceFormToItem();
     }
-  }
+  };
 }
 
 export default PointPresenter;

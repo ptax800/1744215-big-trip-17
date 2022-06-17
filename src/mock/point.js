@@ -1,5 +1,5 @@
-import { createOffer } from './offers.js'
-import { createDestination } from './destinations.js'
+import { createOffer } from './offers.js';
+import { createDestination } from './destinations.js';
 
 /* Point
 {
@@ -27,7 +27,11 @@ const createPoint = ({
   dateFrom,
   dateTo,
   isFavorite,
-  destination: createDestination(),
+  destination: { // null
+    name: 'Moon',
+    description: 'xyz',
+    pictures: [],
+  },//createDestination(),
   offers,
 });
 
@@ -39,13 +43,15 @@ const createPoints = () => [
     offers: [
       createOffer({ id: 1 }),
       createOffer({ id: 2 })
-    ]
+    ],
+    basePrice: 200,
   }),
   createPoint({
     type: 'train',
     dateFrom: new Date('2022-05-14T01:00:00.845Z'),
     dateTo: new Date('2022-05-14T05:00:00.845Z'),
     offers: Array.from({ length: 4}, createOffer),
+    basePrice: 100,
   }),
   createPoint({
     trype: 'ship',
@@ -53,6 +59,7 @@ const createPoints = () => [
     dateTo: new Date('2022-05-15T14:00:00.845Z'),
     isFavorite: true,
     offers: Array.from({ length: 1 }, createOffer),
+    basePrice: 500,
   }),
 ];
 

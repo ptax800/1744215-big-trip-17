@@ -23,7 +23,7 @@ const createDestination = ({
   ],
 });
 
-const createDestinations = [
+const createDestinations = () => [
   createDestination({ name: 'Moscow' }),
   createDestination({ name: 'Moon' }),
   createDestination({ name: 'Mars' }),

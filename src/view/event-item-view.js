@@ -17,7 +17,7 @@ const createTemplate = (point) => {
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
     : '';
-  
+
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -57,34 +57,35 @@ const createTemplate = (point) => {
 
 export default class EventItemView extends AbstractView {
   #point = null;
-  
+
   constructor(point) {
     super();
-    
+
     this.#point = point;
   }
-  
+
   get template() {
     return createTemplate(this.#point);
   }
-  
+
   setRollupButtonClickHandler = (callback) => {
     this._callback.clickRollup = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupButtonClick);
-  }
+  };
 
   setFavoriteButtonClickHandler = (callback) => {
     this._callback.clickFavorite = callback;
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteButtonClick);
-  }
+  };
+
   // Д4: on + (на каком элементе) + что случилось
-  #onRollupButtonClick = (evt) => { 
+  #onRollupButtonClick = (evt) => {
     evt.preventDefault();
     this._callback.clickRollup();
-  }        
+  };
 
   #onFavoriteButtonClick = (evt) => {
     evt.preventDefault();
     this._callback.clickFavorite();
-  }
+  };
 }

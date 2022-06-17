@@ -1,3 +1,9 @@
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
 const POINT_TYPES = [
   'taxi',
   'bus',
@@ -10,4 +16,7 @@ const POINT_TYPES = [
   'restaurant',
 ];
 
-export {POINT_TYPES};
+export {
+  SortType,
+  POINT_TYPES,
+};

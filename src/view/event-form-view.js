@@ -1,5 +1,5 @@
-import AbstractView from '../framework/view/abstract-view';
-import { POINT_TYPES } from '../mock/const';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { POINT_TYPES } from '../const';
 
 // edit mode
 /*
@@ -76,13 +76,51 @@ const createPhotosContainerTemplates = (pictures) => (
   </div>`
 );
 
+const createDestinationTemplate = ({ destination, hasDescription, hasPictures }) => {
+  const { description, pictures } = destination;
 
-const createTemplate = (point) => {
-  const { id, type, dateFrom, dateTo, basePrice, destination } = point;
-  const { name, description, pictures } = destination;
+  const descriptionTemplate = hasDescription 
+    ? `<p class="event__destination-description">${description}</p>` 
+    : '';
 
-  const photosContainerTemplate = pictures.length > 0
-    ? createPhotosContainerTemplates(pictures)
+  const picturesTemplate = hasPictures 
+    ? reatePhotosContainerTemplates(pictures) 
+    : '';
+  
+  return (
+    `<section class="event__section event__section--destination">
+      <h3 class="event__section-title event__section-title--destination">Destination</h3>
+      ${descriptionTemplate}
+      ${picturesTemplate}
+    </section>`
+  );
+};
+
+const createDestinationInputTemplate = ({ type, destination: { name }, destinationNames }) => (
+  `<div class="event__field-group event__field-group--destination">
+      <label class="event__label  event__type-output" for="event-destination-1">
+        ${type}
+      </label>
+      <input
+        class="event__input  event__input--destination"
+        id="event-destination-1"
+        type="text"
+        name="event-destination"
+        value="${name}"
+        list="destination-list-1"
+      >
+      <datalist id="destination-list-1">
+        ${destinationNames.map((name) => `<option value="${name}"></option>`).join('')}
+      </datalist>
+  </div>`
+);
+
+const createTemplate = (state) => {
+  const { id, type, dateFrom, dateTo, basePrice, destination, hasDestination } = state;
+
+  const destinationInputTemplate = createDestinationInputTemplate(state);
+  const destinationSectionTemplate = hasDestination 
+    ? createDestinationTemplate(state) 
     : '';
 
   return (
@@ -104,24 +142,7 @@ const createTemplate = (point) => {
       </div>
     </div>
 
-    <div class="event__field-group  event__field-group--destination">
-      <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
-      </label>
-      <input
-        class="event__input  event__input--destination"
-        id="event-destination-1"
-        type="text"
-        name="event-destination"
-        value="${name}"
-        list="destination-list-1"
-      >
-      <datalist id="destination-list-1">
-        <option value="Amsterdam"></option>
-        <option value="Geneva"></option>
-        <option value="Chamonix"></option>
-      </datalist>
-    </div>
+    ${destinationInputTemplate}
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -136,7 +157,7 @@ const createTemplate = (point) => {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+      <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${basePrice}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -197,47 +218,106 @@ const createTemplate = (point) => {
       </div>
     </section>
 
-    <section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
-      ${photosContainerTemplate}
-    </section>
+    ${destinationSectionTemplate}
+
   </section>
   </form>
   </li>`
   );
 };
 
-export default class EventFormView extends AbstractView {
-  #point = null;
-
-  constructor(point) {
+export default class EventFormView extends AbstractStatefulView {
+  #destinations = [];
+  
+  constructor(point, destinations) {
     super(); // 1) new AbstractView
 
-    this.#point = point;
+    this._state = { // EventFormView.parsePointToState
+      ...point,
+      hasDestination: point.destination.description !== '' || point.destination.pictures.length > 0,
+      hasDescription: point.destination.description !== '',
+      hasPictures: point.destination.pictures.length > 0,
+      destinationNames: destinations.map(({ name }) => name),
+    };
+
+    this.#destinations = destinations;
+
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createTemplate(this.#point);
+    return createTemplate(this._state);
   }
 
   setRollupButtonClickHandler = (callback) => {
     this._callback.clickRollup = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupButtonClick);
-  }
+  };
 
   setSaveButtonClickHandler = (callback) => {
     this._callback.clickSave = callback;
     this.element.addEventListener('submit', this.#onSubmit);
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+
+    this.setRollupButtonClickHandler(this._callback.clickRollup);
+    this.setSaveButtonClickHandler(this._callback.clickSave);
   }
+
+  #setInnerHandlers = () => {
+    const element = this.element;
+    const destinationInputElement = element.querySelector('.event__input--destination');
+    const priceInputElement = element.querySelector('.event__input--price');
+
+    // focusin: https://developer.mozilla.org/ru/docs/Web/API/Element/focusin_event
+    destinationInputElement.addEventListener('focusin', this.#onDestinationInputFocusin);
+    destinationInputElement.addEventListener('change', this.#onDestinationInputChange);
+    priceInputElement.addEventListener('input', this.#onPriceInput);
+  };
+
+  #onPriceInput = (evt) => {
+    this._setState({ basePrice: evt.target.valueAsNumber });
+  };
+
+  #onDestinationInputFocusin = (evt) => {
+    const target = evt.target;
+
+    target.placeholder = target.value;
+    target.value = '';
+
+    const onTargetKeydown = (evt) => {
+      evt.preventDefault();
+    };
+
+    // focusout: https://developer.mozilla.org/ru/docs/Web/API/Element/focusout_event
+    target.addEventListener('focusout', () => {
+      target.value = target.placeholder;
+      target.removeEventListener('keydown', onTargetKeydown);
+    }, { once: true });
+
+    target.addEventListener('keydown', onTargetKeydown);
+  };
+
+  #onDestinationInputChange = (evt) => {
+    evt.preventDefault();
+
+    const selectedName = evt.target.value;
+    const destination = this.#destinations.find(({ name }) => name === selectedName);
+
+    this.updateElement({ destination });
+  };
+
   // Д4: on + (на каком элементе) + что случилось
   #onRollupButtonClick = (evt) => {
     evt.preventDefault();
-    this._callback.clickRollup();
-  }
+    this._callback.clickRollup?.();
+  };
+
   // Д8: Методы внутри классов упорядочены
   #onSubmit = (evt) => {
     evt.preventDefault();
-    this._callback.clickSave();
-  }
+    this._callback.clickSave?.();
+  };
 }

@@ -11,7 +11,7 @@ export default class AbstractStatefulView extends AbstractView {
    * Метод для обновления состояния и перерисовки элемента
    * @param {Object} update Объект с обновлённой частью состояния
    */
-  updateElement = (update) => {
+  updateElement = (update) => { // { destination }
     if (!update) {
       return;
     }
