@@ -41,7 +41,6 @@ class PointPresenter {
     this.#eventFormView.setSaveButtonClickHandler(this.#handleEventFormSaveButtonClick);
 
     if (prevEventItemView === null || prevEventFormView === null) {
-      // render(this.#eventItemView, this.#container);
       render(this.#eventFormView, this.#container);
       return;
     }

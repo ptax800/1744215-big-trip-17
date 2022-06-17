@@ -9,10 +9,6 @@ const updateItemById = (items, update) => {
     return items.slice();
   }
 
-  /*
-  const newItems = items.slice();
-  newItems.splice(index, 1, update);
-  **/
 
   return [
     ...items.slice(0, index),

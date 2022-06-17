@@ -78,7 +78,6 @@ export default class EventItemView extends AbstractView {
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteButtonClick);
   };
 
-  // Д4: on + (на каком элементе) + что случилось
   #onRollupButtonClick = (evt) => {
     evt.preventDefault();
     this._callback.clickRollup();

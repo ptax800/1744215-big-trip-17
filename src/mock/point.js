@@ -1,18 +1,7 @@
 import { createOffer } from './offers.js';
 import { createDestination } from './destinations.js';
 
-/* Point
-{
-  "base_price": 1100,
-  "date_from": "2019-07-10T22:55:56.845Z",
-  "date_to": "2019-07-11T11:22:13.375Z",
-  "destination": $Destination$,
-  "id": "0",
-  "is_favorite": false,
-  "offers": $Array<Offer>$,
-  "type": "bus"
-}
-**/
+
 const createPoint = ({
   type = 'bus',
   dateFrom = new Date('2019-07-10T22:55:56.845Z'),
@@ -31,7 +20,7 @@ const createPoint = ({
     name: 'Moon',
     description: 'xyz',
     pictures: [],
-  },//createDestination(),
+  },
   offers,
 });
 
@@ -68,29 +57,3 @@ export {
   createPoints,
 };
 
-/* логика создания массива offers для рендеринга с `checked`
-const offers = [];
-
-typeOffers.forEach((offer) => {
-  offers.push({
-    ...offer,
-    checked: point.offers.some(({ id }) => offer.id === offer),
-  })
-})
-**/
-
-
-/*
-const offerTypeEnToRu = {
-  bus: 'Автобус',
-};
-
-offerTypeEnToRu['bus'] //
-
-const offerRuMap = new Map()
-offerRuMap.set('bus', 'Автобус');
-
-const createPoints = [
-  createPoint({ type: 'bus', })
-];
-**/

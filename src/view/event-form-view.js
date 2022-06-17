@@ -1,23 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { POINT_TYPES } from '../const';
 
-// edit mode
-/*
-  <button class="event__reset-btn" type="reset">Delete</button>
-  <button class="event__rollup-btn" type="button">
-    <span class="visually-hidden">Open event</span>
-  </button>
-**/
 
-// new mode
-/*
-    <button class="event__reset-btn" type="reset">Cancel</button>
-**/
-
-// => const.js
-
-
-//  ${type === 'flight' ? 'checked' : ''}
 const createTypeItemTemplate = (id, text, isChecked = false) => (
   `<div class="event__type-item">
     <input
@@ -37,15 +21,12 @@ const createTypeListTemplate = (currentType, types) => types
   .map((pointType) => createTypeItemTemplate(pointType, capitalizeFirstLetter(pointType), currentType === pointType))
   .join('');
 
-// => util.js
-// const capitalizeFirstLetter = (text) => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
+
 const capitalizeFirstLetter = (text) =>
   text.length > 0
     ? `${text[0].toUpperCase()}${text.slice(1)}`
     : '';
 
-// console.log(capitalizeFirstLetter('bus'));
-// console.log(capitalizeFirstLetter(''));
 
 const createOfferTemplate = ({ title, price, isChcked = false }) => (
   `<div class="event__offer-selector">
@@ -79,14 +60,14 @@ const createPhotosContainerTemplates = (pictures) => (
 const createDestinationTemplate = ({ destination, hasDescription, hasPictures }) => {
   const { description, pictures } = destination;
 
-  const descriptionTemplate = hasDescription 
-    ? `<p class="event__destination-description">${description}</p>` 
+  const descriptionTemplate = hasDescription
+    ? `<p class="event__destination-description">${description}</p>`
     : '';
 
-  const picturesTemplate = hasPictures 
-    ? reatePhotosContainerTemplates(pictures) 
+  const picturesTemplate = hasPictures
+    ? reatePhotosContainerTemplates(pictures)
     : '';
-  
+
   return (
     `<section class="event__section event__section--destination">
       <h3 class="event__section-title event__section-title--destination">Destination</h3>
@@ -119,8 +100,8 @@ const createTemplate = (state) => {
   const { id, type, dateFrom, dateTo, basePrice, destination, hasDestination } = state;
 
   const destinationInputTemplate = createDestinationInputTemplate(state);
-  const destinationSectionTemplate = hasDestination 
-    ? createDestinationTemplate(state) 
+  const destinationSectionTemplate = hasDestination
+    ? createDestinationTemplate(state)
     : '';
 
   return (
@@ -228,11 +209,11 @@ const createTemplate = (state) => {
 
 export default class EventFormView extends AbstractStatefulView {
   #destinations = [];
-  
-  constructor(point, destinations) {
-    super(); // 1) new AbstractView
 
-    this._state = { // EventFormView.parsePointToState
+  constructor(point, destinations) {
+    super();
+
+    this._state = {
       ...point,
       hasDestination: point.destination.description !== '' || point.destination.pictures.length > 0,
       hasDescription: point.destination.description !== '',
@@ -271,7 +252,6 @@ export default class EventFormView extends AbstractStatefulView {
     const destinationInputElement = element.querySelector('.event__input--destination');
     const priceInputElement = element.querySelector('.event__input--price');
 
-    // focusin: https://developer.mozilla.org/ru/docs/Web/API/Element/focusin_event
     destinationInputElement.addEventListener('focusin', this.#onDestinationInputFocusin);
     destinationInputElement.addEventListener('change', this.#onDestinationInputChange);
     priceInputElement.addEventListener('input', this.#onPriceInput);
@@ -291,7 +271,6 @@ export default class EventFormView extends AbstractStatefulView {
       evt.preventDefault();
     };
 
-    // focusout: https://developer.mozilla.org/ru/docs/Web/API/Element/focusout_event
     target.addEventListener('focusout', () => {
       target.value = target.placeholder;
       target.removeEventListener('keydown', onTargetKeydown);
@@ -309,13 +288,11 @@ export default class EventFormView extends AbstractStatefulView {
     this.updateElement({ destination });
   };
 
-  // Д4: on + (на каком элементе) + что случилось
   #onRollupButtonClick = (evt) => {
     evt.preventDefault();
     this._callback.clickRollup?.();
   };
 
-  // Д8: Методы внутри классов упорядочены
   #onSubmit = (evt) => {
     evt.preventDefault();
     this._callback.clickSave?.();
