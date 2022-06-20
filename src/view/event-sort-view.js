@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { SortType } from '../const';
 
-const createTemplate = () => (
+const createViewTemplate = () => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
   <div class="trip-sort__item  trip-sort__item--day">
     <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="${SortType.DAY}" checked>
@@ -30,9 +30,9 @@ const createTemplate = () => (
 </form>`
 );
 
-export default class EventSortView extends AbstractView {
+class EventSortView extends AbstractView {
   get template() {
-    return createTemplate();
+    return createViewTemplate();
   }
 
   setChangeHandler = (callback) => {
@@ -45,3 +45,5 @@ export default class EventSortView extends AbstractView {
     this._callback.change(evt.target.value);
   };
 }
+
+export default EventSortView;

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatEventDate, formatScheduleDate, formatEventDuration } from '../utils/point';
+import { formatEventDate, formatScheduleDate, formatEventDuration } from '../utils/date';
 
 const createOfferTemplate = ({ title, price }) => (
   `<li class="event__offer">
@@ -9,10 +9,10 @@ const createOfferTemplate = ({ title, price }) => (
    </li>`
 );
 
-const createTemplate = (point) => {
-  const { type, dateFrom, dateTo, basePrice, offers, isFavorite, destination: { name } } = point;
+const createViewTemplate = (point, selectedOffers) => {
+  const { type, dateFrom, dateTo, basePrice, isFavorite, destination: { name } } = point;
 
-  const offersTemplate = offers.map(createOfferTemplate).join('');
+  const offersTemplate = selectedOffers.map(createOfferTemplate).join('');
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
@@ -32,7 +32,7 @@ const createTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${dateTo.toISOString()}">${formatScheduleDate(dateTo)}</time>
         </p>
-        <p class="event__duration">${formatEventDuration(dateTo - dateFrom)}</p>
+        <p class="event__duration">${formatEventDuration(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -55,17 +55,19 @@ const createTemplate = (point) => {
   );
 };
 
-export default class EventItemView extends AbstractView {
+class EventItemView extends AbstractView {
   #point = null;
+  #selectedOffers = [];
 
-  constructor(point) {
+  constructor(point, selectedOffers) {
     super();
 
     this.#point = point;
+    this.#selectedOffers = selectedOffers;
   }
 
   get template() {
-    return createTemplate(this.#point);
+    return createViewTemplate(this.#point, this.#selectedOffers);
   }
 
   setRollupButtonClickHandler = (callback) => {
@@ -88,3 +90,5 @@ export default class EventItemView extends AbstractView {
     this._callback.clickFavorite();
   };
 }
+
+export default EventItemView;

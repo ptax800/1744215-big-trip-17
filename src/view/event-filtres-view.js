@@ -26,8 +26,10 @@ const createTemplate = () => (
   </div>`
 );
 
-export default class EventFiltresView extends AbstractView {
+class EventFiltresView extends AbstractView {
   get template() {
     return createTemplate();
   }
 }
+
+export default EventFiltresView;
