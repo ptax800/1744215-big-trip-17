@@ -35,6 +35,7 @@ newEventButtonView.setClickHandler(() => {
   });
 });
 
+
 headerPresenter.init(mainElement);
 pointsPresenter.init(eventsContainerElement);
 
