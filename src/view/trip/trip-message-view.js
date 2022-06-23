@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '@framework/view/abstract-view';
 
 const createViewTemplate = (message) => (
   `<p class="trip-events__msg">${message}</p>`

@@ -1,7 +1,6 @@
-import Observable from '../framework/observable.js';
-import { UpdateType } from '../const.js';
+import Observable from '@framework/observable.js';
 
-import { sortPointsByDay } from '../utils/sort';
+import { UpdateType } from '@/const.js';
 
 class PointsModel extends Observable {
   #pointsApiService = null;
@@ -20,9 +19,7 @@ class PointsModel extends Observable {
   init = async () => {
     try {
       const points = await this.#pointsApiService.points;
-      this.#points = points
-        .map(PointsModel.adaptToClient)
-        .sort(sortPointsByDay);
+      this.#points = points.map(PointsModel.adaptToClient);
     } catch(err) {
       this.#points = [];
     }
@@ -80,10 +77,6 @@ class PointsModel extends Observable {
       const newPoint = PointsModel.adaptToClient(response);
 
       this.#points = [newPoint, ...this.#points];
-
-      if (updateType === UpdateType.MINOR) {
-        this.#points.sort(sortPointsByDay);
-      }
 
       this._notify(updateType, newPoint);
     } catch(err) {

@@ -10,6 +10,12 @@ const POINT_TYPES = [
   'restaurant',
 ];
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
 const SortType = {
   DAY: 'day',
   TIME: 'time',
@@ -29,21 +35,21 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-/*
-Значение отображаемого текста зависит от выбранного фильтра:
-  * Everthing – 'Click New Event to create your first point'
-  * Past — 'There are no past events now';
-  * Future — 'There are no future events now'.
-**/
 const TripMessage = {
   LOADING: 'Loading...',
-  NO_POINTS: 'Click New Event to create your first point',
+};
+
+const UiBlockerTimeLimit  = {
+  LOWER: 350,
+  UPPER: 1000,
 };
 
 export {
   POINT_TYPES,
+  FilterType,
   SortType,
   UserAction,
   UpdateType,
   TripMessage,
+  UiBlockerTimeLimit,
 };

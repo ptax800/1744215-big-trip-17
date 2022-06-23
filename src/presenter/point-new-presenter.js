@@ -1,8 +1,8 @@
-import { remove, render, RenderPosition } from '../framework/render.js';
-import EventFormView from '../view/event-form-view';
-import { UserAction, UpdateType } from '../const.js';
+import { remove, render, RenderPosition } from '@framework/render';
+import { isEscEvent } from '@util/common';
+import { UserAction, UpdateType } from '@/const';
 
-import { isEscEvent } from '../utils/common';
+import EventFormView from '@view/event/event-form-view';
 
 const createNewPoint = () => ({
   type: 'taxi',
@@ -49,6 +49,19 @@ class PointNewPresenter {
     document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
+  destroy = () => {
+    if (this.#eventFormView === null) {
+      return;
+    }
+
+    this.#destroyCallback?.();
+
+    remove(this.#eventFormView);
+    this.#eventFormView = null;
+
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+  };
+
   setSaving = () => {
     this.#eventFormView.updateElement({
       isDisabled: true,
@@ -68,18 +81,6 @@ class PointNewPresenter {
     this.#eventFormView.shake(resetFormState);
   };
 
-  destroy = () => {
-    if (this.#eventFormView === null) {
-      return;
-    }
-
-    this.#destroyCallback?.();
-
-    remove(this.#eventFormView);
-    this.#eventFormView = null;
-
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-  };
 
   #handleSaveButtonClick = (point) => {
     this.#changeAction(

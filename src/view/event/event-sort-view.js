@@ -1,5 +1,6 @@
-import AbstractView from '../framework/view/abstract-view';
-import { SortType } from '../const';
+import AbstractView from '@framework/view/abstract-view';
+
+import { SortType } from '@/const';
 
 const createViewTemplate = () => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -35,7 +36,11 @@ class EventSortView extends AbstractView {
     return createViewTemplate();
   }
 
-  setChangeHandler = (callback) => {
+  setSort = (sortType) => {
+    this.element.querySelector(`input[id=sort-${sortType}]`).checked = true;
+  };
+
+  setTypeChangeHandler = (callback) => {
     this._callback.change = callback;
     this.element.addEventListener('change', this.#onChange);
   };

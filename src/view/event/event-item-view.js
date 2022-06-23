@@ -1,5 +1,6 @@
-import AbstractView from '../framework/view/abstract-view';
-import { formatEventDate, formatScheduleDate, formatEventDuration } from '../utils/date';
+import AbstractView from '@framework/view/abstract-view';
+
+import { formatEventDate, formatScheduleDate, formatEventDuration } from '@util/date';
 
 const createOfferTemplate = ({ title, price }) => (
   `<li class="event__offer">
@@ -21,16 +22,16 @@ const createViewTemplate = (point, selectedOffers) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
-      <time class="event__date" datetime=""${dateFrom.toISOString()}">${formatEventDate(dateFrom)}</time>
+      <time class="event__date" datetime=""${dateFrom?.toISOString()}">${formatEventDate(dateFrom)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dateFrom.toISOString()}">${formatScheduleDate(dateFrom)}</time>
+          <time class="event__start-time" datetime="${dateFrom?.toISOString()}">${formatScheduleDate(dateFrom)}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dateTo.toISOString()}">${formatScheduleDate(dateTo)}</time>
+          <time class="event__end-time" datetime="${dateTo?.toISOString()}">${formatScheduleDate(dateTo)}</time>
         </p>
         <p class="event__duration">${formatEventDuration(dateFrom, dateTo)}</p>
       </div>

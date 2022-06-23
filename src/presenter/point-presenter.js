@@ -1,9 +1,9 @@
-import EventItemView from '../view/event-item-view';
-import EventFormView from '../view/event-form-view';
+import { render, replace, remove } from '@framework/render';
+import { isEscEvent } from '@util/common';
+import { UserAction, UpdateType } from '@/const';
 
-import { render, replace, remove } from '../framework/render';
-import { UserAction, UpdateType } from '../const.js';
-import { isEscEvent } from '../utils/common';
+import EventItemView from '@view/event/event-item-view';
+import EventFormView from '@view/event/event-form-view';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -62,6 +62,18 @@ class PointPresenter {
     remove(prevEventFormView);
   };
 
+  destroy = () => {
+    remove(this.#eventItemView);
+    remove(this.#eventFormView);
+  };
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToItem();
+    }
+  };
+
+
   setSaving = () => {
     if (this.#mode === Mode.EDITING) {
       this.#eventFormView.updateElement({
@@ -95,17 +107,6 @@ class PointPresenter {
     };
 
     this.#eventFormView.shake(resetFormState);
-  };
-
-  destroy = () => {
-    remove(this.#eventItemView);
-    remove(this.#eventFormView);
-  };
-
-  resetView = () => {
-    if (this.#mode !== Mode.DEFAULT) {
-      this.#replaceFormToItem();
-    }
   };
 
   #replaceItemToForm = () => {
@@ -152,11 +153,11 @@ class PointPresenter {
     );
   };
 
-  #handleEventFormDeleteButtonClick = (point) => {
+  #handleEventFormDeleteButtonClick = () => {
     this.#changeAction(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
-      point,
+      this.#point,
     );
   };
 

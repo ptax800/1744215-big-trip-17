@@ -26,5 +26,17 @@ module.exports = {
           use: ['style-loader', 'css-loader']
         }
     ]
-  }
+  },
+
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@util': path.resolve(__dirname, 'src/util'),
+      '@view': path.resolve(__dirname, 'src/view'),
+      '@model': path.resolve(__dirname, 'src/model'),
+      '@presenter': path.resolve(__dirname, 'src/presenter'),
+      '@service': path.resolve(__dirname, 'src/service'),
+      '@framework': path.resolve(__dirname, 'src/framework'),
+    },
+  },
 };

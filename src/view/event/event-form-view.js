@@ -1,8 +1,14 @@
-import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { POINT_TYPES } from '../const';
+import AbstractStatefulView from '@framework/view/abstract-stateful-view';
 
-import { setFlatpickr } from '../utils/flatpickr';
-import { capitalizeFirstLetter } from '../utils/common';
+import { capitalizeFirstLetter } from '@util/common';
+import { setFlatpickr } from '@util/flatpickr';
+
+import { POINT_TYPES } from '@/const';
+
+const getSaveButtonText = (isSaving) => isSaving ? 'Saving...' : 'Save';
+const getDeleteButtonText = (isDeleting) => isDeleting ? 'Deleting...' : 'Delete';
+
+const checkDestination = ({ description, pictures }) => description !== '' || pictures.length > 0;
 
 const createTypeItemTemplate = (id, text, isChecked = false) => (
   `<div class="event__type-item">
@@ -119,7 +125,7 @@ const createViewTemplate = (state) => {
     isDisabled,
     isSaving,
     isDeleting,
-    isNew,
+    isNewMode,
   } = state;
 
   const destinationInputTemplate = createDestinationInputTemplate(state);
@@ -186,11 +192,11 @@ const createViewTemplate = (state) => {
       >
     </div>
 
-    <button class="event__save-btn btn btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+    <button class="event__save-btn btn btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${getSaveButtonText(isSaving)}</button>
     
-    ${isNew
+    ${isNewMode
       ? '<button class="event__reset-btn" type="reset">Cancel</button>'
-      : `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+      : `<button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getDeleteButtonText(isDeleting)}</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>`
@@ -204,8 +210,6 @@ const createViewTemplate = (state) => {
   </li>`
   );
 };
-
-const checkDestination = ({ description, pictures }) => description !== '' || pictures.length > 0;
 
 class EventFormView extends AbstractStatefulView {
   #pointService = null;
@@ -228,9 +232,8 @@ class EventFormView extends AbstractStatefulView {
   }
 
   setRollupButtonClickHandler = (callback) => {
-    this._callback.clickRollup = callback;
-
-    if (! this._state.isNew) {
+    if (! this._state.isNewMode) {
+      this._callback.clickRollup = callback;
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupButtonClick);
     }
   };
@@ -313,7 +316,12 @@ class EventFormView extends AbstractStatefulView {
   };
 
   #setFlatpickers = () => {
-    this.#startTimeFlatpickr = setFlatpickr(this.element.querySelector('#event-start-time-1'), { // input[name=event-start-time]
+    const element = this.element;
+
+    const startTimeInputElement = element.querySelector('#event-start-time-1');
+    const endTimeInputElement = element.querySelector('#event-end-time-1');
+
+    this.#startTimeFlatpickr = setFlatpickr(startTimeInputElement, {
       defaultDate: this._state.dateFrom,
       maxDate: this._state.dateTo,
       onClose: ([dateFrom]) => {
@@ -322,7 +330,7 @@ class EventFormView extends AbstractStatefulView {
       },
     });
 
-    this.#endTimeFlatpickr = setFlatpickr(this.element.querySelector('#event-end-time-1'), {
+    this.#endTimeFlatpickr = setFlatpickr(endTimeInputElement, {
       defaultDate: this._state.dateTo,
       minDate: this._state.dateFrom,
       onClose: ([dateTo]) => {
@@ -330,6 +338,13 @@ class EventFormView extends AbstractStatefulView {
         this._setState({ dateTo });
       },
     });
+
+    startTimeInputElement.addEventListener('keydown', this.#onTimeInputKeydown);
+    endTimeInputElement.addEventListener('keydown', this.#onTimeInputKeydown);
+  };
+
+  #onTimeInputKeydown = (evt) => {
+    evt.preventDefault();
   };
 
   #onPriceInput = (evt) => {
@@ -394,42 +409,23 @@ class EventFormView extends AbstractStatefulView {
   #onReset = (evt) => {
     evt.preventDefault();
 
-    if (this._state.isNew) {
-      this._callback.clickCancel?.();
-      return;
-    }
-
-    const point = EventFormView.parseStateToPoint(this._state);
-
-    this._callback.clickDelete?.(point);
+    this._callback[this._state.isNewMode ? 'clickCancel' : 'clickDelete']?.();
   };
 
   static parsePointToState = (point, pointService) => {
-    const {
-      type,
-      destination,
-      offers,
-    } = point;
+    const { type, destination, dateFrom, dateTo, offers } = point;
 
-    const typeOffers = pointService.getOffersByType(type);
-
-    const availableOffers = [];
-    Object.values(typeOffers).forEach((typeOffer) => {
-      availableOffers.push({
-        ...typeOffer,
-        isChecked: offers.some((id) => id === typeOffer.id),
-      });
-    });
-
-    const hasOffers = availableOffers.length > 0;
+    const availableOffers = pointService.getAvailableOffersByIds(type, offers);
 
     return {
       ...point,
+      dateFrom: dateFrom !== null ? dateFrom : '',
+      dateTo: dateTo !== null ? dateTo : '',
       destinationNames: pointService.getDestinationNames(),
       availableOffers,
-      hasOffers,
+      hasOffers: availableOffers.length > 0,
       hasDestination: checkDestination(destination),
-      isNew: point.id === undefined,
+      isNewMode: point.id === undefined,
       isDisabled: false,
       isSaving: false,
       isDeleting: false,
@@ -443,7 +439,7 @@ class EventFormView extends AbstractStatefulView {
     delete point.availableOffers;
     delete point.hasOffers;
     delete point.hasDestination;
-    delete point.isNew;
+    delete point.isNewMode;
     delete point.isDisabled;
     delete point.isDeleting;
     delete point.isSaving;
