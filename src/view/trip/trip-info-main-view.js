@@ -11,7 +11,7 @@ const createViewTemplate = () => (
 
 const formatDestinationNames = (names) => names.length > 3
   ? `${names.at(0)} — ... — ${names.at(-1)}`
-  : `${names.at(0)} — ${names.at(-1)}`;
+  : `${names.join(' — ')}`;
 
 const formatTripDates = ({ dateStart, dateEnd }) =>
   `${formatEventDate(dateStart)} — ${formatEventDate(dateEnd)}`;
